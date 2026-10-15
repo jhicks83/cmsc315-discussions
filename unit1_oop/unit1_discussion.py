@@ -12,7 +12,6 @@ analyze the code to demonstrate understanding of inheritance, namespaces, and ob
 
 from copy import copy, deepcopy
 
-
 # TODO 1:
 # Create a parent class.
 #
@@ -24,9 +23,22 @@ from copy import copy, deepcopy
 #
 # Replace the pass statement with your implementation.
 
-class ParentClass:
-    pass
+class Asset:
+    default_os = "Win 11 Enterprise"
 
+    def __init__(self, asset_tag: str, assigned_to: str):
+        self.asset_tag = asset_tag
+        self.assigned_to = assigned_to
+        self.config = {
+            "installed_software": ["Chrome Browser", "Office 365", "Adobe Reader"]
+        }
+
+    def get_asset_details(self):
+        return (
+            f"[OS: {Asset.default_os}] Tag: {self.asset_tag} | "
+            f"Assigned To: {self.assigned_to} | "
+            f"Software: {self.config['installed_software']}"
+        )
 
 # TODO 2:
 # Create a child class that inherits from the parent class.
@@ -40,8 +52,24 @@ class ParentClass:
 #
 # Replace the pass statement with your implementation.
 
-class ChildClass(ParentClass):
-    pass
+class DesignerWorkstation(Asset):
+    discrete_gpu = False
+
+    def __init__(self, asset_tag: str, assigned_to: str, storage: int = 2000, memory: int = 32):
+        super().__init__(asset_tag, assigned_to)
+        self.storage = storage
+        self.memory = memory
+
+    def add_software(self, software_name: str):
+        self.config["installed_software"].append(software_name)
+        return f"Allocated '{software_name}' onto {self.asset_tag}."
+
+    def get_asset_details(self):
+        base_details = super().get_asset_details()
+        return (
+            f"{base_details} | RAM: {self.memory} GB | "
+            f"Storage: {self.storage} GB | Discrete GPU: {DesignerWorkstation.discrete_gpu}"
+        )
 
 
 # TODO 3:
@@ -57,7 +85,14 @@ class ChildClass(ParentClass):
 
 def demonstrate_namespaces():
     print("\n=== Namespace Demonstration ===")
-    print("TODO: Implement namespace demonstration")
+    first_object = DesignerWorkstation("WS-DES-11", "Billy Bob", memory=64)
+    second_object = DesignerWorkstation("WS-DES-12", "Jojo Mayer", storage=4000)
+    print(f"Class var through class: {DesignerWorkstation.discrete_gpu}")
+    print(f"Class var through object instance: {first_object.discrete_gpu}")
+    first_object.dual_monitors = True
+    print("First object namespace:\n", first_object.__dict__)
+    print("Second object namespace:\n", second_object.__dict__)
+    print("Class namespace:\n", DesignerWorkstation.__dict__)
 
 
 # TODO 4:
@@ -73,7 +108,19 @@ def demonstrate_namespaces():
 
 def demonstrate_copying():
     print("\n=== Copy Demonstration ===")
-    print("TODO: Implement shallow copy and deep copy demonstration")
+    original_workstation = DesignerWorkstation("WS-STA-101", "Unassigned", memory=64)
+    shallow_ws = copy(original_workstation)
+    deep_ws = deepcopy(original_workstation)
+    original_workstation.assigned_to = "Onboarding Lead"
+    original_workstation.config["installed_software"].append("Blender")
+
+    print(f"Original : Assigned={original_workstation.assigned_to} | Software={original_workstation.config['installed_software']}")
+    # We see that the shallow copy has its own namespace, so rebinding assigned_to does not affect it,
+    # but in-place mutation of the shared nested list does reflect.
+    print(f"Shallow  : Assigned={shallow_ws.assigned_to} | Software={shallow_ws.config['installed_software']}")
+    # We see the deep copy occupies its own space in memory as it maintains an exact replica
+    # of original_workstation as it was when the copy was created
+    print(f"Deep     : Assigned={deep_ws.assigned_to} | Software={deep_ws.config['installed_software']}")
 
 
 # TODO 5:
@@ -89,9 +136,15 @@ def demonstrate_copying():
 def main():
     print("=== Unit 1 OOP Assignment ===")
 
-    print("\nTODO: Create and test your parent object")
+    print("\n=== Parent Class demonstration ===")
+    standard_asset = Asset(asset_tag="WS-STA-001", assigned_to="Front office hot desk")
+    print(standard_asset.get_asset_details())
 
-    print("\nTODO: Create and test your child object")
+    print("\n=== Child Class object demonstration ===")
+    lead_ws = DesignerWorkstation(asset_tag="WS-DES-99",assigned_to="Sarah Connor", storage=4000, memory=64)
+    print(lead_ws.get_asset_details())
+    print(lead_ws.add_software("Skynet"))
+    print(f"Updated software allocations: {lead_ws.config['installed_software']}")
 
     demonstrate_namespaces()
     demonstrate_copying()
