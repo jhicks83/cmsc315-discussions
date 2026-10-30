@@ -159,13 +159,6 @@ def main():
     # ===============================
     #
     # Demonstrate at least two edge cases.
-    #
-    # Example ideas:
-    # - Delete using an invalid index
-    # - Search for a missing value
-    # - Insert into an empty list
-    # - Delete from an empty list
-    # - Use comments to explain each edge case.
 
     print("\n\n=== EDGE CASES ===")
 
